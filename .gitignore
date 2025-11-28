@@ -205,3 +205,28 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Plan
+*.pdf
+
+# Data files (too large for git)
+data/raw/*
+data/processed/*
+data/final/*
+
+# Keep directory structure
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/final/.gitkeep
+
+# API credentials
+.env
+.kaggle/
+
+# Outputs (generated files)
+outputs/figures/*
+outputs/tables/*
+
+# Keep directory structure
+!outputs/figures/.gitkeep
+!outputs/tables/.gitkeep
