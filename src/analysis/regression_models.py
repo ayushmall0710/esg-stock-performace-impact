@@ -23,22 +23,8 @@ def run_rq1_sharpe_esg(df: pd.DataFrame) -> Tuple[sm.regression.linear_model.Reg
     print("RQ1: ESG Score → Sharpe Ratio")
     print("=" * 60)
 
-    # Find ESG score column
-    esg_col = None
-    for col in df.columns:
-        if 'esg' in col.lower() and ('score' in col.lower() or 'rating' in col.lower()):
-            if not any(x in col.lower() for x in ['environmental', 'social', 'governance', '_e', '_s', '_g']):
-                esg_col = col
-                break
-
-    if esg_col is None:
-        # Try to find total ESG column another way
-        esg_candidates = [col for col in df.columns if 'esg' in col.lower()]
-        if esg_candidates:
-            esg_col = esg_candidates[0]
-            print(f"⚠️  Using {esg_col} as ESG score column")
-
-    # Find sector dummy columns
+    # Use known column names
+    esg_col = 'totalEsg'
     sector_cols = [col for col in df.columns if col.startswith('Sector_')]
 
     # Prepare variables
@@ -104,21 +90,8 @@ def run_rq2_volatility_esg(df: pd.DataFrame) -> Tuple[sm.regression.linear_model
     print("RQ2: ESG Score → Volatility")
     print("=" * 60)
 
-    # Find ESG score column
-    esg_col = None
-    for col in df.columns:
-        if 'esg' in col.lower() and ('score' in col.lower() or 'rating' in col.lower()):
-            if not any(x in col.lower() for x in ['environmental', 'social', 'governance', '_e', '_s', '_g']):
-                esg_col = col
-                break
-
-    if esg_col is None:
-        # Try to find total ESG column another way
-        esg_candidates = [col for col in df.columns if 'esg' in col.lower()]
-        if esg_candidates:
-            esg_col = esg_candidates[0]
-            print(f"⚠️  Using {esg_col} as ESG score column")
-
+    # Use known column names
+    esg_col = 'totalEsg'
     sector_cols = [col for col in df.columns if col.startswith('Sector_')]
 
     # Prepare variables
@@ -187,32 +160,10 @@ def run_rq3_pillars(df: pd.DataFrame) -> Tuple[Dict[str, sm.regression.linear_mo
     print("RQ3: ESG Pillars (E, S, G) → Performance & Risk")
     print("=" * 60)
 
-    # Find pillar columns
-    e_col = None
-    s_col = None
-    g_col = None
-
-    for col in df.columns:
-        col_lower = col.lower()
-        if 'environment' in col_lower and ('score' in col_lower or 'rating' in col_lower):
-            e_col = col
-        elif col_lower in ['e_score', 'e', 'environmental', 'environment']:
-            e_col = col
-        elif 'social' in col_lower and ('score' in col_lower or 'rating' in col_lower):
-            s_col = col
-        elif col_lower in ['s_score', 's', 'social']:
-            s_col = col
-        elif 'governance' in col_lower and ('score' in col_lower or 'rating' in col_lower):
-            g_col = col
-        elif col_lower in ['g_score', 'g', 'governance']:
-            g_col = col
-
-    if not all([e_col, s_col, g_col]):
-        print(f"\n❌ Could not find all pillar columns:")
-        print(f"   E: {e_col}")
-        print(f"   S: {s_col}")
-        print(f"   G: {g_col}")
-        return {}, {}
+    # Use known pillar column names
+    e_col = 'environmentScore'
+    s_col = 'socialScore'
+    g_col = 'governanceScore'
 
     print(f"\n📊 Using pillars:")
     print(f"   E: {e_col}")
