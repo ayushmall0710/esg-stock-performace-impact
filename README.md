@@ -70,26 +70,21 @@ pip install -r requirements.txt
 
 #### Kaggle API (Required)
 1. Go to https://www.kaggle.com/settings/account
-2. Click "Create New API Token" to download `kaggle.json`
-3. Create the Kaggle directory and move the file:
-   ```bash
-   mkdir -p ~/.kaggle
-   mv ~/Downloads/kaggle.json ~/.kaggle/
-   chmod 600 ~/.kaggle/kaggle.json
-   ```
-
-#### FRED API (Optional)
-1. Sign up for a free FRED API key at https://fred.stlouisfed.org/docs/api/api_key.html
-2. Copy [.env.template](.env.template) to `.env`:
+2. Click "Create New API Token" to create and copy the API key
+3. Copy [.env.template](.env.template) to `.env`:
    ```bash
    cp .env.template .env
    ```
-3. Add your API keys to `.env`:
+4. Add your API keys to `.env`:
    ```
    KAGGLE_USERNAME=your_kaggle_username
    KAGGLE_KEY=your_kaggle_api_key
    FRED_API_KEY=your_fred_api_key_here
    ```
+
+#### FRED API (Optional)
+1. Sign up for a free FRED API key at https://fred.stlouisfed.org/docs/api/api_key.html
+2. Add your API key to `.env`
 
 **Note:** If you don't have a FRED API key, the scripts will guide you to download the data manually.
 
