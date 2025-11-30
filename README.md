@@ -50,7 +50,7 @@ esg-stock-performace-impact/
 
 ### 1. Clone the Repository
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/ayushmall0710/esg-stock-performace-impact.git
 cd esg-stock-performace-impact
 ```
 
