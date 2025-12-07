@@ -10,6 +10,7 @@ This script:
 Usage:
     python scripts/run_feature_engineering.py
 """
+
 import sys
 from pathlib import Path
 
@@ -18,10 +19,11 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 import pandas as pd
+
+from src.feature_engineering.aggregate_features import aggregate_all_features
+from src.feature_engineering.controls import create_control_variables
 from src.feature_engineering.performance_metrics import calculate_performance_metrics
 from src.feature_engineering.risk_metrics import calculate_risk_metrics
-from src.feature_engineering.controls import create_control_variables
-from src.feature_engineering.aggregate_features import aggregate_all_features
 
 
 def main():
@@ -38,11 +40,11 @@ def main():
 
     try:
         master_df = pd.read_csv(master_file)
-        print(f"✅ Loaded {len(master_df)} records from {master_file}")
-        print(f"   Tickers: {master_df['Ticker'].nunique()}")
-        print(f"   Date range: {master_df['Date'].min()} to {master_df['Date'].max()}")
+        print(f"[OK] Loaded {len(master_df)} records from {master_file}")
+        print(f"\tTickers: {master_df['Ticker'].nunique()}")
+        print(f"\tDate range: {master_df['Date'].min()} to {master_df['Date'].max()}")
     except FileNotFoundError:
-        print(f"❌ File not found: {master_file}")
+        print(f"[ERROR] File not found: {master_file}")
         print("Please run data processing first: python scripts/process_data.py")
         return False
 
@@ -51,19 +53,20 @@ def main():
     try:
         performance_df = calculate_performance_metrics(
             df=master_df,
-            ticker_col='Ticker',
-            return_col='Return',
-            excess_return_col='Excess_Return'
+            ticker_col="Ticker",
+            return_col="Return",
+            excess_return_col="Excess_Return",
         )
 
         # Save intermediate results
         perf_file = "data/processed/performance_metrics.csv"
         performance_df.to_csv(perf_file, index=False)
-        print(f"\n💾 Performance metrics saved to: {perf_file}")
+        print(f"\n[SAVED] Performance metrics saved to: {perf_file}")
 
     except Exception as e:
-        print(f"\n❌ Error calculating performance metrics: {e}")
+        print(f"\n[ERROR] Error calculating performance metrics: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
@@ -72,20 +75,21 @@ def main():
     try:
         risk_df = calculate_risk_metrics(
             df=master_df,
-            ticker_col='Ticker',
-            return_col='Return',
-            excess_return_col='Excess_Return',
-            market_return_col='Market_Return'
+            ticker_col="Ticker",
+            return_col="Return",
+            excess_return_col="Excess_Return",
+            market_return_col="Market_Return",
         )
 
         # Save intermediate results
         risk_file = "data/processed/risk_metrics.csv"
         risk_df.to_csv(risk_file, index=False)
-        print(f"\n💾 Risk metrics saved to: {risk_file}")
+        print(f"\n[SAVED] Risk metrics saved to: {risk_file}")
 
     except Exception as e:
-        print(f"\n❌ Error calculating risk metrics: {e}")
+        print(f"\n[ERROR] Error calculating risk metrics: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
@@ -93,23 +97,26 @@ def main():
     print("\n\n### STEP 3/4: Control Variables ###")
     try:
         # Get unique tickers with company info
-        company_df = master_df[['Ticker', 'Market_Cap', 'Sector']].drop_duplicates(subset=['Ticker'])
+        company_df = master_df[["Ticker", "Market_Cap", "Sector"]].drop_duplicates(
+            subset=["Ticker"]
+        )
 
         controls_df = create_control_variables(
             df=company_df,
-            ticker_col='Ticker',
-            market_cap_col='Market_Cap',
-            sector_col='Sector'
+            ticker_col="Ticker",
+            market_cap_col="Market_Cap",
+            sector_col="Sector",
         )
 
         # Save intermediate results
         controls_file = "data/processed/control_variables.csv"
         controls_df.to_csv(controls_file, index=False)
-        print(f"\n💾 Control variables saved to: {controls_file}")
+        print(f"\n[SAVED] Control variables saved to: {controls_file}")
 
     except Exception as e:
-        print(f"\n❌ Error creating control variables: {e}")
+        print(f"\n[ERROR] Error creating control variables: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
@@ -121,12 +128,13 @@ def main():
             performance_df=performance_df,
             risk_df=risk_df,
             controls_df=controls_df,
-            output_file="data/final/analysis_dataset.csv"
+            output_file="data/final/analysis_dataset.csv",
         )
 
     except Exception as e:
-        print(f"\n❌ Error aggregating features: {e}")
+        print(f"\n[ERROR] Error aggregating features: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
@@ -135,28 +143,28 @@ def main():
     print("FEATURE ENGINEERING SUMMARY")
     print("=" * 60)
 
-    print(f"\n✅ All steps completed successfully!")
+    print("\n[SUCCESS] All steps completed successfully!")
 
-    print(f"\nFiles created:")
-    print(f"   data/processed/performance_metrics.csv")
-    print(f"   data/processed/risk_metrics.csv")
-    print(f"   data/processed/control_variables.csv")
-    print(f"   data/final/analysis_dataset.csv")
+    print("\nFiles created:")
+    print("\tdata/processed/performance_metrics.csv")
+    print("\tdata/processed/risk_metrics.csv")
+    print("\tdata/processed/control_variables.csv")
+    print("\tdata/final/analysis_dataset.csv")
 
-    print(f"\nFinal analysis dataset:")
-    print(f"   Companies: {len(analysis_df)}")
-    print(f"   Variables: {len(analysis_df.columns)}")
+    print("\nFinal analysis dataset:")
+    print(f"\tCompanies: {len(analysis_df)}")
+    print(f"\tVariables: {len(analysis_df.columns)}")
 
-    print(f"\nKey metrics available:")
-    print(f"   ✅ Sharpe Ratio (DV for RQ1)")
-    print(f"   ✅ Volatility (DV for RQ2)")
-    print(f"   ✅ ESG Score (IV)")
-    print(f"   ✅ E, S, G Pillars (IV for RQ3)")
-    print(f"   ✅ Log Market Cap (control)")
-    print(f"   ✅ Sector Dummies (control)")
+    print("\nKey metrics available:")
+    print("\t[OK] Sharpe Ratio (DV for RQ1)")
+    print("\t[OK] Volatility (DV for RQ2)")
+    print("\t[OK] ESG Score (IV)")
+    print("\t[OK] E, S, G Pillars (IV for RQ3)")
+    print("\t[OK] Log Market Cap (control)")
+    print("\t[OK] Sector Dummies (control)")
 
-    print(f"\nNext steps:")
-    print(f"   python scripts/run_analysis.py")
+    print("\nNext steps:")
+    print("\tpython scripts/run_analysis.py")
 
     print("=" * 60)
 
