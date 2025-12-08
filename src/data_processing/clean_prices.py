@@ -1,15 +1,19 @@
 """
 Clean and process stock price data.
 """
+
 from pathlib import Path
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 
 
-def clean_price_data(input_file: str = "data/raw/sp500_price_data.csv",
-                     output_file: str = "data/processed/prices_cleaned.csv",
-                     start_date: str = "2023-09-01",
-                     end_date: str = "2024-08-31") -> pd.DataFrame:
+def clean_price_data(
+    input_file: str = "data/raw/sp500_price_data.csv",
+    output_file: str = "data/processed/prices_cleaned.csv",
+    start_date: str = "2023-09-01",
+    end_date: str = "2024-08-31",
+) -> pd.DataFrame:
     """
     Clean and process stock price data.
 
@@ -34,19 +38,19 @@ def clean_price_data(input_file: str = "data/raw/sp500_price_data.csv",
     print("=" * 60)
 
     # Load data
-    print(f"\n📂 Loading data from: {input_file}")
+    print(f"\n[LOADING] Loading data from: {input_file}")
     try:
         df = pd.read_csv(input_file)
-        print(f"✅ Loaded {len(df)} records")
+        print(f"[OK] Loaded {len(df)} records")
     except FileNotFoundError:
-        print(f"❌ File not found: {input_file}")
+        print(f"[ERROR] File not found: {input_file}")
         print("Please run data download script first.")
         return None
 
     print(f"\nColumns: {df.columns.tolist()}")
 
     # Identify date column
-    date_candidates = ['Date', 'date', 'DATE', 'Timestamp', 'timestamp']
+    date_candidates = ["Date", "date", "DATE", "Timestamp", "timestamp"]
     date_col = None
     for col in date_candidates:
         if col in df.columns:
@@ -54,43 +58,46 @@ def clean_price_data(input_file: str = "data/raw/sp500_price_data.csv",
             break
 
     if date_col is None:
-        print(f"\n❌ Could not find date column in: {df.columns.tolist()}")
+        print(f"\n[ERROR] Could not find date column in: {df.columns.tolist()}")
         return None
 
     # Parse dates
-    print(f"\n🔧 Parsing dates from column: '{date_col}'")
+    print(f"\n[PROCESSING] Parsing dates from column: '{date_col}'")
     df[date_col] = pd.to_datetime(df[date_col])
 
     # Filter to analysis window
-    print(f"🔧 Filtering to date range: {start_date} to {end_date}")
+    print(f"[PROCESSING] Filtering to date range: {start_date} to {end_date}")
     original_count = len(df)
     df = df[(df[date_col] >= start_date) & (df[date_col] <= end_date)].copy()
-    print(f"   Kept {len(df)} / {original_count} records")
+    print(f"\tKept {len(df)} / {original_count} records")
 
     # Sort by date
-    print("🔧 Sorting by date...")
+    print("[PROCESSING] Sorting by date...")
     df = df.sort_values(date_col).reset_index(drop=True)
 
     # Identify price columns (typically: Open, High, Low, Close, Volume)
     price_columns = []
     for col in df.columns:
         col_lower = col.lower()
-        if any(price_type in col_lower for price_type in ['open', 'high', 'low', 'close', 'adj', 'price']):
+        if any(
+            price_type in col_lower
+            for price_type in ["open", "high", "low", "close", "adj", "price"]
+        ):
             if col != date_col:
                 price_columns.append(col)
 
-    print(f"\n📊 Identified price columns: {price_columns}")
+    print(f"\n[INFO] Identified price columns: {price_columns}")
 
     # Check if data is in wide format (one row per date, multiple ticker columns)
     # or long format (one row per ticker-date pair)
-    if 'Ticker' in df.columns or 'Symbol' in df.columns:
+    if "Ticker" in df.columns or "Symbol" in df.columns:
         # Long format
-        print("\n📋 Data format: Long (one row per ticker-date)")
-        ticker_col = 'Ticker' if 'Ticker' in df.columns else 'Symbol'
+        print("\n[INFO] Data format: Long (one row per ticker-date)")
+        ticker_col = "Ticker" if "Ticker" in df.columns else "Symbol"
 
         # Analyze missing data by ticker
         tickers = df[ticker_col].unique()
-        print(f"\n🔍 Analyzing {len(tickers)} unique tickers...")
+        print(f"\n[CHECKING] Analyzing {len(tickers)} unique tickers...")
 
         ticker_stats = []
         for ticker in tickers:
@@ -102,47 +109,49 @@ def clean_price_data(input_file: str = "data/raw/sp500_price_data.csv",
             # Check for NaN values in price columns
             nan_counts = ticker_df[price_columns].isnull().sum().sum()
 
-            ticker_stats.append({
-                'Ticker': ticker,
-                'Days': actual_days,
-                'Expected': expected_days,
-                'Missing_Pct': missing_pct,
-                'NaN_Count': nan_counts
-            })
+            ticker_stats.append(
+                {
+                    "Ticker": ticker,
+                    "Days": actual_days,
+                    "Expected": expected_days,
+                    "Missing_Pct": missing_pct,
+                    "NaN_Count": nan_counts,
+                }
+            )
 
         stats_df = pd.DataFrame(ticker_stats)
 
         # Drop tickers with > 10% missing data
         threshold = 10
-        bad_tickers = stats_df[stats_df['Missing_Pct'] > threshold]['Ticker'].tolist()
+        bad_tickers = stats_df[stats_df["Missing_Pct"] > threshold]["Ticker"].tolist()
 
         if bad_tickers:
-            print(f"\n⚠️  Dropping {len(bad_tickers)} tickers with > {threshold}% missing data:")
-            print(f"   {', '.join(bad_tickers[:10])}")
+            print(
+                f"\n[WARNING] Dropping {len(bad_tickers)} tickers with > {threshold}% missing data:"
+            )
+            print(f"\t{', '.join(bad_tickers[:10])}")
             if len(bad_tickers) > 10:
-                print(f"   ... and {len(bad_tickers) - 10} more")
+                print(f"\t... and {len(bad_tickers) - 10} more")
 
             df = df[~df[ticker_col].isin(bad_tickers)].copy()
 
         # Handle remaining missing values with forward fill (max 5 days)
-        print(f"\n🔧 Forward-filling missing values (max 5 days)...")
+        print("\n[PROCESSING] Forward-filling missing values (max 5 days)...")
         df = df.sort_values([ticker_col, date_col])
 
         for col in price_columns:
-            df[col] = df.groupby(ticker_col)[col].transform(
-                lambda x: x.ffill(limit=5)
-            )
+            df[col] = df.groupby(ticker_col)[col].transform(lambda x: x.ffill(limit=5))
 
         # Drop any remaining NaN values
         remaining_na = df[price_columns].isnull().sum().sum()
         if remaining_na > 0:
-            print(f"   Dropping {remaining_na} remaining NaN values")
+            print(f"\tDropping {remaining_na} remaining NaN values")
             df = df.dropna(subset=price_columns)
 
     else:
         # Wide format
-        print("\n📋 Data format: Wide (one row per date, columns per ticker)")
-        print("   Converting to long format...")
+        print("\n[INFO] Data format: Wide (one row per date, columns per ticker)")
+        print("\tConverting to long format...")
 
         # Set date as index
         df = df.set_index(date_col)
@@ -156,23 +165,25 @@ def clean_price_data(input_file: str = "data/raw/sp500_price_data.csv",
         bad_columns = missing_pct[missing_pct > threshold].index.tolist()
 
         if bad_columns:
-            print(f"\n⚠️  Dropping {len(bad_columns)} tickers with > 10% missing data")
+            print(f"\n[WARNING] Dropping {len(bad_columns)} tickers with > 10% missing data")
             df = df.drop(columns=bad_columns)
 
         # Check for infinite values before conversion
-        print("\n🔍 Checking for infinite values...")
+        print("\n[CHECKING] Checking for infinite values...")
         inf_count = np.isinf(df.values).sum()
         if inf_count > 0:
-            print(f"   Found {inf_count} infinite values, replacing with NaN")
+            print(f"\tFound {inf_count} infinite values, replacing with NaN")
             df = df.replace([np.inf, -np.inf], np.nan)
 
         # Drop any remaining NaN values
         df = df.dropna()
 
         # Convert wide to long format for consistency
-        df = df.reset_index().melt(id_vars=[date_col], var_name='Ticker', value_name='Close')
-        ticker_col = 'Ticker'
-        price_columns = ['Close']
+        df = df.reset_index().melt(
+            id_vars=[date_col], var_name="Ticker", value_name="Close"
+        )
+        ticker_col = "Ticker"
+        price_columns = ["Close"]
 
     # Final statistics
     print("\n" + "=" * 60)
@@ -186,7 +197,7 @@ def clean_price_data(input_file: str = "data/raw/sp500_price_data.csv",
     # Save cleaned data
     Path(output_file).parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(output_file, index=False)
-    print(f"\n✅ Cleaned data saved to: {output_file}")
+    print(f"\n[OK] Cleaned data saved to: {output_file}")
 
     # Display sample
     print("\nData preview:")

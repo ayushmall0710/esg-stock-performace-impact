@@ -1,0 +1,18 @@
+ESG STOCK PERFORMANCE ANALYSIS - SUMMARY OF FINDINGS
+================================================================================
+
+RQ1: Do companies with higher ESG scores earn higher risk-adjusted returns?
+  ESG Coefficient: -0.004321
+  P-value: 0.5349
+  Significant at 5%: NO
+  R-squared: 0.1995
+
+RQ2: Do higher ESG scores reduce stock return volatility?
+  ESG Coefficient: 0.001588
+  P-value: 0.0190
+  Significant at 5%: YES
+  R-squared: 0.1464
+
+RQ3: Which ESG pillar drives risk-adjusted returns and volatility?
+  Sharpe Ratio - Dominant: G
+  Volatility - Dominant: G

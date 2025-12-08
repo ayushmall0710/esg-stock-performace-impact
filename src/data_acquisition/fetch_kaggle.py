@@ -1,6 +1,7 @@
 """
 Fetch S&P 500 ESG and stock price data from Kaggle.
 """
+
 import os
 import subprocess
 from pathlib import Path
@@ -31,7 +32,7 @@ def download_kaggle_dataset(output_dir: str = "data/raw") -> bool:
     has_json_creds = kaggle_json.exists()
 
     if not has_env_creds and not has_json_creds:
-        print("\n❌ Kaggle API credentials not found!")
+        print("\n[ERROR] Kaggle API credentials not found!")
         print("\nPlease set up your Kaggle API credentials using one of these methods:")
         print("\nMethod 1: Environment Variables (recommended for this project)")
         print("1. Copy .env.template to .env")
@@ -41,16 +42,16 @@ def download_kaggle_dataset(output_dir: str = "data/raw") -> bool:
         print("1. Go to https://www.kaggle.com/settings/account")
         print("2. Click 'Create New API Token' to download kaggle.json")
         print("3. Run the following commands:")
-        print(f"   mkdir -p {kaggle_dir}")
-        print(f"   mv ~/Downloads/kaggle.json {kaggle_dir}/")
-        print(f"   chmod 600 {kaggle_json}")
+        print(f"\tmkdir -p {kaggle_dir}")
+        print(f"\tmv ~/Downloads/kaggle.json {kaggle_dir}/")
+        print(f"\tchmod 600 {kaggle_json}")
         print("\nThen run this script again.")
         return False
 
     if has_env_creds:
-        print(f"\n🔑 Using Kaggle credentials from environment variables")
+        print("\n[INFO] Using Kaggle credentials from environment variables")
     else:
-        print(f"\n🔑 Using Kaggle credentials from {kaggle_json}")
+        print(f"\n[INFO] Using Kaggle credentials from {kaggle_json}")
 
     # Dataset identifier
     dataset = "rikinzala/s-and-p-500-esg-and-stocks-data-2023-24"
@@ -61,10 +62,19 @@ def download_kaggle_dataset(output_dir: str = "data/raw") -> bool:
     try:
         # Download and unzip the dataset
         result = subprocess.run(
-            ["kaggle", "datasets", "download", "-d", dataset, "-p", output_dir, "--unzip"],
+            [
+                "kaggle",
+                "datasets",
+                "download",
+                "-d",
+                dataset,
+                "-p",
+                output_dir,
+                "--unzip",
+            ],
             capture_output=True,
             text=True,
-            check=True
+            check=True,
         )
 
         print(result.stdout)
@@ -77,26 +87,28 @@ def download_kaggle_dataset(output_dir: str = "data/raw") -> bool:
             file_path = Path(output_dir) / file
             if file_path.exists():
                 size_mb = file_path.stat().st_size / (1024 * 1024)
-                print(f"✅ Found: {file} ({size_mb:.2f} MB)")
+                print(f"[OK] Found: {file} ({size_mb:.2f} MB)")
                 downloaded_files.append(file)
             else:
-                print(f"❌ Missing: {file}")
+                print(f"[ERROR] Missing: {file}")
 
         if len(downloaded_files) == len(expected_files):
-            print("\n✅ Kaggle dataset downloaded successfully!")
+            print("\n[OK] Kaggle dataset downloaded successfully!")
             return True
         else:
-            print(f"\n⚠️  Warning: Expected {len(expected_files)} files, found {len(downloaded_files)}")
+            print(
+                f"\n[WARNING]  Warning: Expected {len(expected_files)} files, found {len(downloaded_files)}"
+            )
             return False
 
     except subprocess.CalledProcessError as e:
-        print(f"\n❌ Error downloading dataset: {e}")
+        print(f"\n[ERROR] Error downloading dataset: {e}")
         print(f"Error output: {e.stderr}")
         return False
     except FileNotFoundError:
-        print("\n❌ Kaggle CLI not found!")
+        print("\n[ERROR] Kaggle CLI not found!")
         print("Please install the Kaggle package:")
-        print("   pip install kaggle")
+        print("\tpip install kaggle")
         return False
 
 

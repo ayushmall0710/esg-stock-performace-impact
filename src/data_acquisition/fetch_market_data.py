@@ -1,12 +1,18 @@
 """
 Fetch S&P 500 index data from Yahoo Finance.
 """
+
 from pathlib import Path
+
 import pandas as pd
 import yfinance as yf
 
 
-def download_sp500_index(output_dir: str = "data/raw", start_date: str = "2023-09-01", end_date: str = "2024-08-31") -> bool:
+def download_sp500_index(
+    output_dir: str = "data/raw",
+    start_date: str = "2023-09-01",
+    end_date: str = "2024-08-31",
+) -> bool:
     """
     Download S&P 500 index daily prices from Yahoo Finance.
 
@@ -25,15 +31,15 @@ def download_sp500_index(output_dir: str = "data/raw", start_date: str = "2023-0
     # Create output directory if it doesn't exist
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
-    print(f"\n📡 Fetching S&P 500 (^GSPC) data...")
-    print(f"📅 Date range: {start_date} to {end_date}")
+    print("\n[FETCHING] Fetching S&P 500 (^GSPC) data...")
+    print(f"[DATE] Date range: {start_date} to {end_date}")
 
     try:
         # Download S&P 500 index data
         sp500 = yf.download("^GSPC", start=start_date, end=end_date, progress=False)
 
         if sp500.empty:
-            print("\n❌ No data downloaded. Please check your internet connection.")
+            print("\n[ERROR] No data downloaded. Please check your internet connection.")
             return False
 
         # Save to CSV with proper formatting
@@ -44,18 +50,20 @@ def download_sp500_index(output_dir: str = "data/raw", start_date: str = "2023-0
         output_file = Path(output_dir) / "sp500_index.csv"
         sp500.to_csv(output_file)
 
-        print(f"\n✅ Data saved to: {output_file}")
-        print(f"📊 Trading days: {len(sp500)}")
-        print(f"📈 Date range: {sp500.index.min().date()} to {sp500.index.max().date()}")
+        print(f"\n[OK] Data saved to: {output_file}")
+        print(f"[INFO] Trading days: {len(sp500)}")
+        print(
+            f"[STATS] Date range: {sp500.index.min().date()} to {sp500.index.max().date()}"
+        )
 
         # Show summary statistics
         print("\nPrice summary:")
-        open_min = sp500['Open'].min()
-        open_max = sp500['Open'].max()
-        close_min = sp500['Close'].min()
-        close_max = sp500['Close'].max()
-        print(f"   Opening price range: ${open_min:.2f} - ${open_max:.2f}")
-        print(f"   Closing price range: ${close_min:.2f} - ${close_max:.2f}")
+        open_min = sp500["Open"].min()
+        open_max = sp500["Open"].max()
+        close_min = sp500["Close"].min()
+        close_max = sp500["Close"].max()
+        print(f"\tOpening price range: ${open_min:.2f} - ${open_max:.2f}")
+        print(f"\tClosing price range: ${close_min:.2f} - ${close_max:.2f}")
 
         # Preview data
         print("\nData preview:")
@@ -64,11 +72,11 @@ def download_sp500_index(output_dir: str = "data/raw", start_date: str = "2023-0
         return True
 
     except Exception as e:
-        print(f"\n❌ Error downloading S&P 500 data: {e}")
+        print(f"\n[ERROR] Error downloading S&P 500 data: {e}")
         print("\nTroubleshooting:")
-        print("   - Check your internet connection")
-        print("   - Verify yfinance package is installed: pip install yfinance")
-        print("   - Try again in a few minutes (Yahoo Finance may have rate limits)")
+        print("\t- Check your internet connection")
+        print("\t- Verify yfinance package is installed: pip install yfinance")
+        print("\t- Try again in a few minutes (Yahoo Finance may have rate limits)")
         return False
 
 
