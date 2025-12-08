@@ -1,0 +1,41 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:           Sharpe_Ratio   R-squared:                       0.201
+Model:                            OLS   Adj. R-squared:                  0.173
+Method:                 Least Squares   F-statistic:                     7.262
+Date:                Sun, 07 Dec 2025   Prob (F-statistic):           1.58e-13
+Time:                        18:49:02   Log-Likelihood:                -468.67
+No. Observations:                 419   AIC:                             967.3
+Df Residuals:                     404   BIC:                             1028.
+Df Model:                          14                                         
+Covariance Type:            nonrobust                                         
+=================================================================================================
+                                    coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------------------------
+const                            -0.3657      0.284     -1.286      0.199      -0.925       0.193
+environmentScore                  0.0042      0.013      0.328      0.743      -0.021       0.029
+socialScore                      -0.0054      0.014     -0.397      0.692      -0.032       0.021
+governanceScore                  -0.0202      0.026     -0.767      0.443      -0.072       0.032
+Log_Market_Cap                    0.2089      0.034      6.139      0.000       0.142       0.276
+Sector_Communication Services     0.3402      0.308      1.103      0.271      -0.266       0.947
+Sector_Consumer Cyclical          0.1466      0.225      0.653      0.514      -0.295       0.588
+Sector_Consumer Defensive        -0.0894      0.230     -0.388      0.698      -0.542       0.363
+Sector_Energy                    -0.3794      0.257     -1.478      0.140      -0.884       0.125
+Sector_Financial Services         0.8779      0.262      3.348      0.001       0.362       1.393
+Sector_Healthcare                 0.1982      0.252      0.786      0.433      -0.298       0.694
+Sector_Industrials                0.3363      0.218      1.540      0.124      -0.093       0.766
+Sector_Real Estate                0.4396      0.252      1.742      0.082      -0.056       0.936
+Sector_Technology                 0.2683      0.226      1.188      0.235      -0.176       0.712
+Sector_Unknown                         0          0        nan        nan           0           0
+Sector_Utilities                  0.4543      0.230      1.979      0.049       0.003       0.906
+==============================================================================
+Omnibus:                        1.173   Durbin-Watson:                   1.783
+Prob(Omnibus):                  0.556   Jarque-Bera (JB):                1.206
+Skew:                           0.127   Prob(JB):                        0.547
+Kurtosis:                       2.933   Cond. No.                          inf
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The smallest eigenvalue is      0. This might indicate that there are
+strong multicollinearity problems or that the design matrix is singular.
