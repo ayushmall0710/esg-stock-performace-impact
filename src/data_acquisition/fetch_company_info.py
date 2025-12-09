@@ -42,7 +42,7 @@ def fetch_company_info(
     for i, ticker in enumerate(tickers, 1):
         try:
             # Progress indicator
-            if i % 10 == 0:
+            if i % 50 == 0:
                 print(
                     f"\tProgress: {i}/{len(tickers)} ({successful} successful, {failed} failed)"
                 )
