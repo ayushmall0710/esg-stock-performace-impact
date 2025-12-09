@@ -175,7 +175,9 @@ def main():
     print(f"\t{'[OK]' if results['esg'] else '[FAILED]'} ESG Data Cleaning")
     print(f"\t{'[OK]' if results['prices'] else '[FAILED]'} Price Data Cleaning")
     print(f"\t{'[OK]' if results['returns'] else '[FAILED]'} Returns Calculation")
-    print(f"\t{'[OK]' if results['risk_free'] else '[WARNING]'} Risk-Free Rate Processing")
+    print(
+        f"\t{'[OK]' if results['risk_free'] else '[WARNING]'} Risk-Free Rate Processing"
+    )
     print(f"\t{'[OK]' if results['merge'] else '[FAILED]'} Data Merging")
 
     success_count = sum(
@@ -197,7 +199,7 @@ def main():
         print("\tdata/final/master_dataset.csv")
 
         print("\nNext steps:")
-        print("\tpython scripts/run_analysis.py")
+        print("\tpython scripts/run_feature_engineering.py")
     else:
         print("\n[ERROR] Data processing incomplete. Review error messages above.")
 

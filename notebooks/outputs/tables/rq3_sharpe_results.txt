@@ -2,37 +2,37 @@
 ==============================================================================
 Dep. Variable:           Sharpe_Ratio   R-squared:                       0.201
 Model:                            OLS   Adj. R-squared:                  0.173
-Method:                 Least Squares   F-statistic:                     7.262
-Date:                Sun, 07 Dec 2025   Prob (F-statistic):           1.58e-13
-Time:                        18:49:02   Log-Likelihood:                -468.67
-No. Observations:                 419   AIC:                             967.3
+Method:                 Least Squares   F-statistic:                     7.249
+Date:                Mon, 08 Dec 2025   Prob (F-statistic):           1.69e-13
+Time:                        20:05:21   Log-Likelihood:                -468.75
+No. Observations:                 419   AIC:                             967.5
 Df Residuals:                     404   BIC:                             1028.
 Df Model:                          14                                         
 Covariance Type:            nonrobust                                         
 =================================================================================================
                                     coef    std err          t      P>|t|      [0.025      0.975]
 -------------------------------------------------------------------------------------------------
-const                            -0.3657      0.284     -1.286      0.199      -0.925       0.193
-environmentScore                  0.0042      0.013      0.328      0.743      -0.021       0.029
-socialScore                      -0.0054      0.014     -0.397      0.692      -0.032       0.021
-governanceScore                  -0.0202      0.026     -0.767      0.443      -0.072       0.032
-Log_Market_Cap                    0.2089      0.034      6.139      0.000       0.142       0.276
-Sector_Communication Services     0.3402      0.308      1.103      0.271      -0.266       0.947
-Sector_Consumer Cyclical          0.1466      0.225      0.653      0.514      -0.295       0.588
-Sector_Consumer Defensive        -0.0894      0.230     -0.388      0.698      -0.542       0.363
-Sector_Energy                    -0.3794      0.257     -1.478      0.140      -0.884       0.125
-Sector_Financial Services         0.8779      0.262      3.348      0.001       0.362       1.393
-Sector_Healthcare                 0.1982      0.252      0.786      0.433      -0.298       0.694
-Sector_Industrials                0.3363      0.218      1.540      0.124      -0.093       0.766
-Sector_Real Estate                0.4396      0.252      1.742      0.082      -0.056       0.936
-Sector_Technology                 0.2683      0.226      1.188      0.235      -0.176       0.712
+const                            -0.3595      0.284     -1.266      0.206      -0.918       0.199
+environmentScore                  0.0040      0.013      0.318      0.751      -0.021       0.029
+socialScore                      -0.0054      0.014     -0.399      0.690      -0.032       0.021
+governanceScore                  -0.0203      0.026     -0.770      0.442      -0.072       0.031
+Log_Market_Cap                    0.2085      0.034      6.126      0.000       0.142       0.275
+Sector_Communication Services     0.3394      0.309      1.100      0.272      -0.267       0.946
+Sector_Consumer Cyclical          0.1453      0.225      0.647      0.518      -0.296       0.587
+Sector_Consumer Defensive        -0.0905      0.230     -0.393      0.695      -0.543       0.362
+Sector_Energy                    -0.3781      0.257     -1.473      0.142      -0.883       0.127
+Sector_Financial Services         0.8754      0.262      3.338      0.001       0.360       1.391
+Sector_Healthcare                 0.1976      0.252      0.783      0.434      -0.298       0.694
+Sector_Industrials                0.3343      0.218      1.530      0.127      -0.095       0.764
+Sector_Real Estate                0.4372      0.252      1.733      0.084      -0.059       0.933
+Sector_Technology                 0.2650      0.226      1.173      0.241      -0.179       0.709
 Sector_Unknown                         0          0        nan        nan           0           0
-Sector_Utilities                  0.4543      0.230      1.979      0.049       0.003       0.906
+Sector_Utilities                  0.4542      0.230      1.978      0.049       0.003       0.906
 ==============================================================================
-Omnibus:                        1.173   Durbin-Watson:                   1.783
-Prob(Omnibus):                  0.556   Jarque-Bera (JB):                1.206
-Skew:                           0.127   Prob(JB):                        0.547
-Kurtosis:                       2.933   Cond. No.                          inf
+Omnibus:                        1.193   Durbin-Watson:                   1.784
+Prob(Omnibus):                  0.551   Jarque-Bera (JB):                1.225
+Skew:                           0.128   Prob(JB):                        0.542
+Kurtosis:                       2.934   Cond. No.                          inf
 ==============================================================================
 
 Notes:

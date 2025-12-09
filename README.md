@@ -14,6 +14,9 @@ This project analyzes the relationship between Environmental, Social, and Govern
 2. **RQ2:** Do higher ESG scores reduce stock return volatility?
 3. **RQ3:** Which ESG pillar (E, S, G) drives risk-adjusted returns and volatility the most?
 
+### Abstract (short)
+We test whether ESG scores for S&P 500 firms (Sept 2023–Aug 2024) predict better risk-adjusted returns or lower volatility. Cross-sectional OLS models (n≈419) show no significant link between ESG and Sharpe ratios (p=0.535), but a small, significant positive link to volatility (p=0.018). Governance is the only pillar with a significant effect on volatility; environmental and social pillars are not significant.
+
 ## Project Structure
 
 ```
@@ -21,27 +24,16 @@ esg-stock-performace-impact/
 ├── data/
 │   ├── raw/               # Original downloaded data
 │   ├── processed/         # Cleaned intermediate data
-│   └── final/             # Analysis-ready datasets
-├── src/
-│   ├── data_acquisition/  # Data download modules
-│   ├── data_processing/   # Data cleaning & merging
-│   ├── feature_engineering/ # Metrics calculation
-│   ├── analysis/          # Statistical models
-│   └── visualization/     # Plotting functions
-├── scripts/
-│   ├── download_data.py   # Master data acquisition script
-│   ├── process_data.py    # Data processing pipeline
-│   ├── run_analysis.py    # Execute regressions
-│   └── generate_report.py # Create visualizations
+│   └── final/             # Analysis-ready datasets (incl. analysis_dataset.csv)
+├── src/                   # Pipeline modules
+├── scripts/               # Pipeline runners (download, process, feature engineering, analysis, plots)
 ├── notebooks/
-│   ├── 01_exploratory_analysis.ipynb
-│   ├── 02_feature_engineering.ipynb
-│   └── 03_regression_analysis.ipynb
+│   ├── 00_reproducibility.ipynb              # One-click pipeline rerun
+│   └── ESG Stock Performance Impact Analysis.ipynb  # Main report + code
 ├── outputs/
-│   ├── figures/           # All plots
-│   └── tables/            # Summary statistics & results
+│   ├── figures/           # All plots (PNG/JPEG)
+│   └── tables/            # Regression outputs & stats
 ├── .env                   # API keys (not committed)
-├── .gitignore
 ├── requirements.txt
 └── README.md
 ```
@@ -108,7 +100,8 @@ python scripts/generate_report.py
 ### Option 2: Use Jupyter Notebooks
 ```bash
 jupyter notebook
-# Open notebooks in order: 01 → 02 → 03
+# Open “ESG Stock Performance Impact Analysis.ipynb” for the full report
+# Open “00_reproducibility.ipynb” to rerun the full pipeline
 ```
 
 ## Data Sources
@@ -116,7 +109,9 @@ jupyter notebook
 1. **S&P 500 ESG and Stocks Data (2023-24)**
    - Source: [Kaggle Dataset](https://www.kaggle.com/datasets/rikinzala/s-and-p-500-esg-and-stocks-data-2023-24)
    - License: GPL 3
-   - Contains: ESG scores and daily stock prices for ~400 S&P 500 companies
+   - Contains: ESG scores (Sustainalytics via Yahoo Finance) and daily stock prices for ~400 S&P 500 companies
+   - Yahoo Finance Terms of Service: https://policies.yahoo.com/us/en/yahoo/terms/products/finance/index.htm
+   - Sustainalytics methodology: https://www.sustainalytics.com/esg-ratings
 
 2. **U.S. 3-Month Treasury Rate (DGS3MO)**
    - Source: [FRED](https://fred.stlouisfed.org/series/DGS3MO)
@@ -147,9 +142,26 @@ We use **Ordinary Least Squares (OLS) regression** to analyze the relationship b
 - **Beta:** Systematic risk relative to market
 - **Excess Returns:** Returns above risk-free rate
 
-## Results
+## Results (high level)
+- **RQ1 (Sharpe ratio):** ESG coefficient = -0.0043 (p = 0.535) → no evidence that higher ESG improves risk-adjusted returns.
+- **RQ2 (Volatility):** ESG coefficient = +0.0016 (p = 0.018) → higher ESG is associated with slightly higher volatility.
+- **RQ3 (Pillars):** Governance drives volatility (+0.0063, p = 0.013); environmental and social pillars not significant for returns or volatility.
 
-*(To be updated after analysis is complete)*
+Key artifacts:
+- Tables: `outputs/tables/analysis_summary.txt`, `rq*_results.txt`, `descriptive_statistics.csv`
+- Figures (PNG): `outputs/figures/` (e.g., esg_vs_sharpe, esg_vs_volatility, pillar_comparison, correlation_heatmap, flowcharts)
+
+Short takeaway: ESG scores did not deliver a near-term risk-adjusted return premium and were linked to modestly higher volatility; governance is the only pillar with a significant volatility relationship.
+
+## Deliverables Checklist
+- **Main notebook (report + code):** `notebooks/ESG Stock Performance Impact Analysis.ipynb`
+- **Helper notebook (pipeline rerun):** `notebooks/00_reproducibility.ipynb`
+- **PDFs:** export the above notebooks via `nbconvert` (see commands above)
+- **Sample/input data:** `data/final/analysis_dataset.csv` (main analysis file)
+- **Outputs:** `outputs/tables/` (regression results, stats); `outputs/figures/` (all charts as PNG)
+- **README + data docs:** this README and `data/README.md` (licenses, provenance, links)
+- **Hyperlinks:** Kaggle, FRED, Yahoo Finance TOS, Sustainalytics methodology, API docs (see Data Sources)
+- **Abstract:** included above (short) and in the main notebook
 
 ## License
 
